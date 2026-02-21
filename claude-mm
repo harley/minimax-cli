@@ -1,37 +1,5 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# MiniMax Claude Wrapper
-# This script runs Claude Code with MiniMax API configuration
-# Usage: ./claude-mm [args]
-
-if ! command -v claude >/dev/null 2>&1; then
-  echo "Error: claude CLI not found. Install Claude Code first." >&2
-  exit 1
-fi
-
-if [[ -z "${MINIMAX_API_KEY:-}" ]]; then
-  if [[ -n "${MINIMAX_API_API:-}" ]]; then
-    export MINIMAX_API_KEY="$MINIMAX_API_API"
-    echo "Notice: using MINIMAX_API_API as fallback for MINIMAX_API_KEY." >&2
-  else
-    echo "Error: MINIMAX_API_KEY is not set in your environment." >&2
-    exit 1
-  fi
-fi
-
-MINIMAX_CLAUDE_BASE_URL="${MINIMAX_CLAUDE_BASE_URL:-https://api.minimax.io/anthropic}"
-MINIMAX_CLAUDE_MODEL="${MINIMAX_CLAUDE_MODEL:-MiniMax-M2.5}"
-
-export ANTHROPIC_BASE_URL="$MINIMAX_CLAUDE_BASE_URL"
-export ANTHROPIC_AUTH_TOKEN="$MINIMAX_API_KEY"
-export API_TIMEOUT_MS="${API_TIMEOUT_MS:-3000000}"
-export CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC="${CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC:-1}"
-export ANTHROPIC_MODEL="${ANTHROPIC_MODEL:-$MINIMAX_CLAUDE_MODEL}"
-export ANTHROPIC_SMALL_FAST_MODEL="${ANTHROPIC_SMALL_FAST_MODEL:-$MINIMAX_CLAUDE_MODEL}"
-export ANTHROPIC_DEFAULT_SONNET_MODEL="${ANTHROPIC_DEFAULT_SONNET_MODEL:-$MINIMAX_CLAUDE_MODEL}"
-export ANTHROPIC_DEFAULT_OPUS_MODEL="${ANTHROPIC_DEFAULT_OPUS_MODEL:-$MINIMAX_CLAUDE_MODEL}"
-export ANTHROPIC_DEFAULT_HAIKU_MODEL="${ANTHROPIC_DEFAULT_HAIKU_MODEL:-$MINIMAX_CLAUDE_MODEL}"
-
-# Launch Claude Code with all passed arguments
-exec claude "$@"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+exec "${SCRIPT_DIR}/bin/claude-mm" "$@"

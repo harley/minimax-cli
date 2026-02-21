@@ -22,6 +22,7 @@ This repo solves that by isolating MiniMax configuration behind wrapper commands
 - `minimax`: Unified launcher that routes to Codex or Claude wrappers.
 - `codex-mm`: Runs `codex` with MiniMax provider config preloaded.
 - `claude-mm`: Runs `claude` with MiniMax Anthropic-compatible config preloaded.
+- `bin/`: Source-of-truth command scripts and dev tooling.
 
 ## Prerequisites
 
@@ -172,8 +173,14 @@ Compatibility fallback:
 Validate scripts:
 
 ```bash
-bash -n minimax codex-mm claude-mm install.sh uninstall.sh scripts/install.sh scripts/uninstall.sh
+./bin/ci
 ```
+
+Project structure notes:
+
+- `bin/minimax`, `bin/codex-mm`, `bin/claude-mm`: primary maintained scripts
+- `minimax`, `codex-mm`, `claude-mm` at repo root: compatibility shims that exec into `bin/`
+- `bin/ci`: canonical local/CI check command
 
 ## Security Notes
 

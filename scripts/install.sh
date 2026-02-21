@@ -54,7 +54,7 @@ REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 mkdir -p "${BIN_DIR}"
 
 for tool in minimax codex-mm claude-mm; do
-  src="${REPO_ROOT}/${tool}"
+  src="${REPO_ROOT}/bin/${tool}"
   dst="${BIN_DIR}/${tool}"
 
   if [[ ! -f "${src}" ]]; then

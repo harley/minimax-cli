@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
+
+SCRIPTS=(
+  "${REPO_ROOT}/bin/lib/common.sh"
+  "${REPO_ROOT}/bin/minimax"
+  "${REPO_ROOT}/bin/codex-mm"
+  "${REPO_ROOT}/bin/claude-mm"
+  "${REPO_ROOT}/bin/ci"
+  "${REPO_ROOT}/scripts/install.sh"
+  "${REPO_ROOT}/scripts/uninstall.sh"
+  "${REPO_ROOT}/install.sh"
+  "${REPO_ROOT}/uninstall.sh"
+  "${REPO_ROOT}/minimax"
+  "${REPO_ROOT}/codex-mm"
+  "${REPO_ROOT}/claude-mm"
+)
+
+echo "==> bash syntax check"
+bash -n "${SCRIPTS[@]}"
+
+if command -v shellcheck >/dev/null 2>&1; then
+  echo "==> shellcheck"
+  shellcheck "${SCRIPTS[@]}"
+else
+  echo "==> shellcheck skipped (not installed)"
+fi
+
+echo "==> cli help smoke tests"
+"${REPO_ROOT}/install.sh" --help >/dev/null
+"${REPO_ROOT}/uninstall.sh" --help >/dev/null
+"${REPO_ROOT}/bin/minimax" --help >/dev/null
+
+echo "==> install/uninstall smoke test"
+TMP_BIN="$(mktemp -d "${TMPDIR:-/tmp}/minimax-cli.XXXXXX")"
+trap 'rm -rf "${TMP_BIN}"' EXIT
+
+"${REPO_ROOT}/install.sh" --bin-dir "${TMP_BIN}" >/dev/null
+test -e "${TMP_BIN}/minimax"
+test -e "${TMP_BIN}/codex-mm"
+test -e "${TMP_BIN}/claude-mm"
+
+"${REPO_ROOT}/uninstall.sh" --bin-dir "${TMP_BIN}" >/dev/null
+if [[ -e "${TMP_BIN}/minimax" || -e "${TMP_BIN}/codex-mm" || -e "${TMP_BIN}/claude-mm" ]]; then
+  echo "Error: uninstall smoke test failed." >&2
+  exit 1
+fi
+
+echo "All checks passed."
+
