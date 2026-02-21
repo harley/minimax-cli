@@ -70,4 +70,8 @@ CODEX_ARGS=(
   -c 'model_providers.minimax.stream_idle_timeout_ms=300000'
 )
 
-exec codex "${CODEX_ARGS[@]}" "${PASSTHROUGH_ARGS[@]}"
+if [[ ${#PASSTHROUGH_ARGS[@]} -gt 0 ]]; then
+  exec codex "${CODEX_ARGS[@]}" "${PASSTHROUGH_ARGS[@]}"
+else
+  exec codex "${CODEX_ARGS[@]}"
+fi
