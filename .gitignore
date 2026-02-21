@@ -1,0 +1,11 @@
+# macOS
+.DS_Store
+
+# local env/secrets
+.env
+.env.*
+*.local
+
+# editor noise
+.vscode/
+.idea/
