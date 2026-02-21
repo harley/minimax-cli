@@ -2,6 +2,21 @@
 
 Lightweight wrappers that run Codex CLI and Claude Code against MiniMax endpoints.
 
+## Official MiniMax Docs
+
+- [MiniMax Claude Code setup](https://platform.minimax.io/docs/coding-plan/claude-code)
+- [MiniMax Codex CLI setup](https://platform.minimax.io/docs/coding-plan/codex-cli)
+
+## Why this repo exists
+
+The official setup guides work, but can be intrusive when applied directly to your default CLI environments.
+In practice, changing global config/env for MiniMax can interfere with your normal `codex` (OpenAI) and `claude` (Anthropic) subscription workflows.
+
+This repo solves that by isolating MiniMax configuration behind wrapper commands:
+
+- `minimax`, `codex-mm`, and `claude-mm` apply MiniMax settings only for that process.
+- Your original `codex` and `claude` commands remain available for normal usage with their original providers/subscriptions.
+
 ## What this repo contains
 
 - `minimax`: Unified launcher that routes to Codex or Claude wrappers.
@@ -80,15 +95,15 @@ minimax claude -p "Explain this repository"
 ### `codex-mm`
 
 ```bash
-./codex-mm [codex arguments]
+codex-mm [codex arguments]
 ```
 
 Examples:
 
 ```bash
-./codex-mm --help
-./codex-mm chat
-./codex-mm exec "Summarize this repository"
+codex-mm --help
+codex-mm chat
+codex-mm exec "Summarize this repository"
 ```
 
 Defaults used by this wrapper:
@@ -116,14 +131,14 @@ Note:
 ### `claude-mm`
 
 ```bash
-./claude-mm [claude arguments]
+claude-mm [claude arguments]
 ```
 
 Examples:
 
 ```bash
-./claude-mm
-./claude-mm -p "Explain this project"
+claude-mm
+claude-mm -p "Explain this project"
 ```
 
 Defaults used by this wrapper:
