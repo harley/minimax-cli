@@ -30,6 +30,37 @@ export MINIMAX_API_KEY="your_minimax_key"
 ./claude-mm
 ```
 
+## Install From Anywhere
+
+Install both wrappers into `~/.local/bin` (default):
+
+```bash
+bash ./scripts/install.sh
+```
+
+Then run globally:
+
+```bash
+codex-mm
+claude-mm
+```
+
+Install options:
+
+```bash
+# choose install directory
+bash ./scripts/install.sh --bin-dir /usr/local/bin
+
+# copy files instead of symlinking
+bash ./scripts/install.sh --copy
+```
+
+Uninstall:
+
+```bash
+bash ./scripts/uninstall.sh
+```
+
 ## Usage
 
 ### `codex-mm`
@@ -112,7 +143,7 @@ Compatibility fallback:
 Validate scripts:
 
 ```bash
-bash -n codex-mm claude-mm
+bash -n codex-mm claude-mm scripts/install.sh scripts/uninstall.sh
 ```
 
 ## Security Notes
