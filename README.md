@@ -14,10 +14,6 @@ Lightweight wrappers that run Codex CLI and Claude Code against MiniMax endpoint
 - `claude` CLI installed (for `claude-mm`)
 - A MiniMax API key
 
-Codex version note:
-
-- MiniMax currently recommends `@openai/codex@0.57.0` for compatibility.
-
 ## Quick Start
 
 ```bash
@@ -55,14 +51,14 @@ Defaults used by this wrapper:
 - Provider: `minimax`
 - Model: `codex-MiniMax-M2.5`
 - Base URL: `https://api.minimax.io/v1`
-- Wire API: `chat`
+- Wire API: `responses`
 
 Environment overrides:
 
 - `MINIMAX_API_KEY` (required)
 - `MINIMAX_BASE_URL` (optional)
 - `MINIMAX_CODEX_MODEL` (optional)
-- `MINIMAX_CODEX_WIRE_API` (optional, default `chat`)
+- `MINIMAX_CODEX_WIRE_API` (optional, default `responses`)
 
 Compatibility fallback:
 
