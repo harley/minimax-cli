@@ -11,8 +11,8 @@ Usage:
 
 Options:
   --bin-dir <dir>  Install destination (default: ~/.local/bin)
-  --copy           Copy files instead of symlinking
-  --symlink        Symlink files (default)
+  --copy           Copy files (default)
+  --symlink        Alias for --copy in bootstrap mode
   --repo <owner/repo>  GitHub repository (default: harley/minimax-cli)
   --ref <name>     Tag or branch to install (default: release tag, fallback: main)
   -h, --help       Show this help
@@ -20,7 +20,6 @@ EOF
 }
 
 BIN_DIR="${HOME}/.local/bin"
-MODE="symlink"
 REPO="${MINIMAX_INSTALL_REPO:-harley/minimax-cli}"
 REF="${MINIMAX_INSTALL_REF:-__MINIMAX_RELEASE_TAG__}"
 
@@ -35,10 +34,9 @@ while [[ $# -gt 0 ]]; do
       BIN_DIR="$1"
       ;;
     --copy)
-      MODE="copy"
       ;;
     --symlink)
-      MODE="symlink"
+      echo "Notice: bootstrap installer forces --copy to avoid broken symlinks." >&2
       ;;
     --repo)
       shift
@@ -136,12 +134,7 @@ if [[ ! -f "${INSTALL_SCRIPT}" ]]; then
   exit 1
 fi
 
-INSTALL_ARGS=(--bin-dir "${BIN_DIR}")
-if [[ "${MODE}" == "copy" ]]; then
-  INSTALL_ARGS+=(--copy)
-else
-  INSTALL_ARGS+=(--symlink)
-fi
+INSTALL_ARGS=(--bin-dir "${BIN_DIR}" --copy)
 
 bash "${INSTALL_SCRIPT}" "${INSTALL_ARGS[@]}"
 
