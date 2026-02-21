@@ -7,10 +7,16 @@ set -euo pipefail
 DEFAULT_MINIMAX_BASE_URL="https://api.minimax.io/v1"
 MINIMAX_BASE_URL="${MINIMAX_BASE_URL:-$DEFAULT_MINIMAX_BASE_URL}"
 MINIMAX_CODEX_MODEL="${MINIMAX_CODEX_MODEL:-codex-MiniMax-M2.5}"
+MINIMAX_CODEX_WIRE_API="${MINIMAX_CODEX_WIRE_API:-chat}"
 
 if ! command -v codex >/dev/null 2>&1; then
   echo "Error: codex CLI not found. Install with: npm i -g @openai/codex@latest" >&2
   exit 1
+fi
+
+CODEX_VERSION="$(codex --version 2>/dev/null | awk '{print $NF}' || true)"
+if [[ -n "$CODEX_VERSION" && "$CODEX_VERSION" != "0.57.0" ]]; then
+  echo "Notice: detected codex-cli ${CODEX_VERSION}; MiniMax docs recommend 0.57.0 for best compatibility." >&2
 fi
 
 if [[ -z "${MINIMAX_API_KEY:-}" ]]; then
@@ -57,7 +63,7 @@ CODEX_ARGS=(
   -c 'model_providers.minimax.name="MiniMax Chat Completions API"'
   -c "model_providers.minimax.base_url=\"${MINIMAX_BASE_URL}\""
   -c 'model_providers.minimax.env_key="MINIMAX_API_KEY"'
-  -c 'model_providers.minimax.wire_api="responses"'
+  -c "model_providers.minimax.wire_api=\"${MINIMAX_CODEX_WIRE_API}\""
   -c 'model_providers.minimax.requires_openai_auth=false'
   -c 'model_providers.minimax.request_max_retries=4'
   -c 'model_providers.minimax.stream_max_retries=10'
