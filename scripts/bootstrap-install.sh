@@ -69,7 +69,7 @@ while [[ $# -gt 0 ]]; do
   shift
 done
 
-if [[ "${REF}" == "__MINIMAX_RELEASE_TAG__" ]]; then
+if [[ "${REF}" == "__MINIMAX_RELEASE_"'TAG__' ]]; then
   REF="main"
 fi
 
