@@ -9,3 +9,8 @@
 # editor noise
 .vscode/
 .idea/
+
+# local demos / recordings
+demo/
+*.cast
+assets/asciinema/
