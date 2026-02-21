@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.0](https://github.com/harley/minimax-cli/compare/v0.1.0...v1.0.0) (2026-02-21)
+
+
+### ⚠ BREAKING CHANGES
+
+* codex-mm no longer proxies Codex; use official MiniMax Codex setup docs instead.
+
+### Features
+
+* pause codex support and make minimax claude-first ([52f89c1](https://github.com/harley/minimax-cli/commit/52f89c12ae235cb86c421fc280f615fd10342beb))
+
+
+### Bug Fixes
+
+* **ci:** remove rg dependency and add minimax screenshot asset ([03bd7f4](https://github.com/harley/minimax-cli/commit/03bd7f405aa6cd107fef5ef8be39e3a11e184f3f))
+
 ## 0.2.0 - 2026-02-21
 
 ### Changed
