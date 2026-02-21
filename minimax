@@ -1,0 +1,85 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+usage() {
+  cat <<'EOF'
+Run MiniMax wrappers for Codex CLI or Claude Code.
+
+Usage:
+  minimax <codex|claude> [args...]
+  minimax
+
+Examples:
+  minimax codex chat
+  minimax claude -p "Explain this repository"
+EOF
+}
+
+resolve_tool() {
+  local name="$1"
+  local self_dir
+  self_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+  if [[ -x "${self_dir}/${name}" ]]; then
+    printf '%s\n' "${self_dir}/${name}"
+  else
+    printf '%s\n' "${name}"
+  fi
+}
+
+run_codex() {
+  local tool
+  tool="$(resolve_tool "codex-mm")"
+  exec "${tool}" "$@"
+}
+
+run_claude() {
+  local tool
+  tool="$(resolve_tool "claude-mm")"
+  exec "${tool}" "$@"
+}
+
+if [[ $# -eq 0 ]]; then
+  if [[ -t 0 && -t 1 ]]; then
+    echo "Choose runtime:"
+    echo "  1) codex"
+    echo "  2) claude"
+    printf "Enter choice [1-2]: "
+    read -r choice
+    case "${choice}" in
+      1|codex)
+        run_codex
+        ;;
+      2|claude)
+        run_claude
+        ;;
+      *)
+        echo "Error: invalid choice '${choice}'." >&2
+        exit 1
+        ;;
+    esac
+  else
+    usage >&2
+    exit 1
+  fi
+fi
+
+case "$1" in
+  codex)
+    shift
+    run_codex "$@"
+    ;;
+  claude)
+    shift
+    run_claude "$@"
+    ;;
+  -h|--help|help)
+    usage
+    ;;
+  *)
+    echo "Error: unknown target '$1'. Use 'codex' or 'claude'." >&2
+    usage >&2
+    exit 1
+    ;;
+esac
+

@@ -3,10 +3,10 @@ set -euo pipefail
 
 usage() {
   cat <<'EOF'
-Uninstall minimax-cli wrappers from a bin directory.
+Uninstall minimax-cli commands from a bin directory.
 
 Usage:
-  ./scripts/uninstall.sh [options]
+  ./uninstall.sh [options]
 
 Options:
   --bin-dir <dir>  Install destination (default: ~/.local/bin)
@@ -39,7 +39,7 @@ while [[ $# -gt 0 ]]; do
   shift
 done
 
-for tool in codex-mm claude-mm; do
+for tool in minimax codex-mm claude-mm; do
   target="${BIN_DIR}/${tool}"
   if [[ -e "${target}" || -L "${target}" ]]; then
     rm -f "${target}"
@@ -50,4 +50,3 @@ for tool in codex-mm claude-mm; do
 done
 
 echo "Uninstall complete."
-

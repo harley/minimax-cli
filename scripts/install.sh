@@ -3,10 +3,10 @@ set -euo pipefail
 
 usage() {
   cat <<'EOF'
-Install minimax-cli wrappers into a bin directory.
+Install minimax-cli commands into a bin directory.
 
 Usage:
-  ./scripts/install.sh [options]
+  ./install.sh [options]
 
 Options:
   --bin-dir <dir>  Install destination (default: ~/.local/bin)
@@ -53,7 +53,7 @@ REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 
 mkdir -p "${BIN_DIR}"
 
-for tool in codex-mm claude-mm; do
+for tool in minimax codex-mm claude-mm; do
   src="${REPO_ROOT}/${tool}"
   dst="${BIN_DIR}/${tool}"
 
@@ -88,4 +88,3 @@ case ":${PATH}:" in
     echo "  export PATH=\"${BIN_DIR}:\$PATH\""
     ;;
 esac
-

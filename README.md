@@ -4,6 +4,7 @@ Lightweight wrappers that run Codex CLI and Claude Code against MiniMax endpoint
 
 ## What this repo contains
 
+- `minimax`: Unified launcher that routes to Codex or Claude wrappers.
 - `codex-mm`: Runs `codex` with MiniMax provider config preloaded.
 - `claude-mm`: Runs `claude` with MiniMax Anthropic-compatible config preloaded.
 
@@ -17,30 +18,29 @@ Lightweight wrappers that run Codex CLI and Claude Code against MiniMax endpoint
 ## Quick Start
 
 ```bash
+git clone https://github.com/harley/minimax-cli.git
 cd minimax-cli
-chmod +x codex-mm claude-mm
+./install.sh
 
 # required
 export MINIMAX_API_KEY="your_minimax_key"
 
-# run Codex on MiniMax
-./codex-mm
-
-# run Claude Code on MiniMax
-./claude-mm
+# run unified launcher (interactive choice: codex or claude)
+minimax
 ```
 
 ## Install From Anywhere
 
-Install both wrappers into `~/.local/bin` (default):
+Install commands into `~/.local/bin` (default):
 
 ```bash
-bash ./scripts/install.sh
+./install.sh
 ```
 
 Then run globally:
 
 ```bash
+minimax
 codex-mm
 claude-mm
 ```
@@ -49,19 +49,33 @@ Install options:
 
 ```bash
 # choose install directory
-bash ./scripts/install.sh --bin-dir /usr/local/bin
+./install.sh --bin-dir /usr/local/bin
 
 # copy files instead of symlinking
-bash ./scripts/install.sh --copy
+./install.sh --copy
 ```
 
 Uninstall:
 
 ```bash
-bash ./scripts/uninstall.sh
+./uninstall.sh
 ```
 
 ## Usage
+
+### `minimax`
+
+```bash
+minimax [codex|claude] [arguments]
+```
+
+Examples:
+
+```bash
+minimax
+minimax codex chat
+minimax claude -p "Explain this repository"
+```
 
 ### `codex-mm`
 
@@ -143,7 +157,7 @@ Compatibility fallback:
 Validate scripts:
 
 ```bash
-bash -n codex-mm claude-mm scripts/install.sh scripts/uninstall.sh
+bash -n minimax codex-mm claude-mm install.sh uninstall.sh scripts/install.sh scripts/uninstall.sh
 ```
 
 ## Security Notes
