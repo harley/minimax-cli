@@ -18,15 +18,11 @@ What this gives you:
 - `claude-mm`: Claude Code wrapper pinned to MiniMax Anthropic-compatible endpoint.
 - `codex-mm`: compatibility command that currently reports Codex as unsupported in this wrapper.
 
-## Screenshots
+## What `minimax` Looks Like
 
-Drop your screenshot at this path:
+Running `minimax` (no args) starts Claude Code with MiniMax settings:
 
-- `assets/screenshots/claude-mm.png`
-
-| Claude Code on MiniMax |
-| --- |
-| ![Claude Code on MiniMax](assets/screenshots/claude-mm.png) |
+![`minimax` default run](assets/screenshots/claude-mm.png)
 
 ## Quick Verify
 
