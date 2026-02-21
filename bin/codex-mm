@@ -1,61 +1,11 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# MiniMax Codex Wrapper
-# Usage: codex-mm [codex args]
+# MiniMax Codex compatibility stub.
+# Usage: codex-mm [args]
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=bin/lib/common.sh
 source "${SCRIPT_DIR}/lib/common.sh"
 
-DEFAULT_MINIMAX_BASE_URL="https://api.minimax.io/v1"
-MINIMAX_BASE_URL="${MINIMAX_BASE_URL:-$DEFAULT_MINIMAX_BASE_URL}"
-MINIMAX_CODEX_MODEL="${MINIMAX_CODEX_MODEL:-codex-MiniMax-M2.5}"
-MINIMAX_CODEX_WIRE_API="${MINIMAX_CODEX_WIRE_API:-responses}"
-
-ensure_command "codex" "Install with: npm i -g @openai/codex@latest"
-ensure_minimax_api_key
-clear_openai_conflicts
-
-# Drop any --profile flag from passthrough args to avoid "profile not found" errors.
-PASSTHROUGH_ARGS=()
-SKIP_NEXT=0
-for arg in "$@"; do
-  if [[ "${SKIP_NEXT}" -eq 1 ]]; then
-    SKIP_NEXT=0
-    continue
-  fi
-
-  case "${arg}" in
-    --profile)
-      SKIP_NEXT=1
-      echo "Notice: ignoring --profile; this wrapper pins MiniMax config directly." >&2
-      ;;
-    --profile=*)
-      echo "Notice: ignoring ${arg}; this wrapper pins MiniMax config directly." >&2
-      ;;
-    *)
-      PASSTHROUGH_ARGS+=("${arg}")
-      ;;
-  esac
-done
-
-CODEX_ARGS=(
-  -c 'model_provider="minimax"'
-  -c "model=\"${MINIMAX_CODEX_MODEL}\""
-  -c 'model_providers.minimax.name="MiniMax Chat Completions API"'
-  -c "model_providers.minimax.base_url=\"${MINIMAX_BASE_URL}\""
-  -c 'model_providers.minimax.env_key="MINIMAX_API_KEY"'
-  -c "model_providers.minimax.wire_api=\"${MINIMAX_CODEX_WIRE_API}\""
-  -c 'model_providers.minimax.requires_openai_auth=false'
-  -c 'model_providers.minimax.request_max_retries=4'
-  -c 'model_providers.minimax.stream_max_retries=10'
-  -c 'model_providers.minimax.stream_idle_timeout_ms=300000'
-)
-
-if [[ ${#PASSTHROUGH_ARGS[@]} -gt 0 ]]; then
-  exec codex "${CODEX_ARGS[@]}" "${PASSTHROUGH_ARGS[@]}"
-else
-  exec codex "${CODEX_ARGS[@]}"
-fi
-
+exit_codex_paused

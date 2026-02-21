@@ -3,22 +3,30 @@ set -euo pipefail
 
 usage() {
   cat <<'EOF'
-Run MiniMax wrappers for Codex CLI or Claude Code.
+Run MiniMax Claude wrapper with Codex support currently paused.
 
 Usage:
-  minimax <codex|claude> [args...]
+  minimax [claude args...]
+  minimax claude [args...]
+  minimax codex [args...]
   minimax
 
 Examples:
-  minimax codex chat
+  minimax -p "Explain this repository"
   minimax claude -p "Explain this repository"
+
+Notes:
+  - `minimax` with no args runs Claude Code.
+  - `minimax codex` is currently unsupported in this wrapper.
 EOF
 }
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=bin/lib/common.sh
+source "${SCRIPT_DIR}/lib/common.sh"
 
 run_codex() {
-  exec "${SCRIPT_DIR}/codex-mm" "$@"
+  exit_codex_paused
 }
 
 run_claude() {
@@ -26,28 +34,7 @@ run_claude() {
 }
 
 if [[ $# -eq 0 ]]; then
-  if [[ -t 0 && -t 1 ]]; then
-    echo "Choose runtime:"
-    echo "  1) codex"
-    echo "  2) claude"
-    printf "Enter choice [1-2]: "
-    read -r choice
-    case "${choice}" in
-      1|codex)
-        run_codex
-        ;;
-      2|claude)
-        run_claude
-        ;;
-      *)
-        echo "Error: invalid choice '${choice}'." >&2
-        exit 1
-        ;;
-    esac
-  else
-    usage >&2
-    exit 1
-  fi
+  run_claude
 fi
 
 case "$1" in
@@ -63,9 +50,6 @@ case "$1" in
     usage
     ;;
   *)
-    echo "Error: unknown target '$1'. Use 'codex' or 'claude'." >&2
-    usage >&2
-    exit 1
+    run_claude "$@"
     ;;
 esac
-

@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+MINIMAX_CODEX_DOCS_URL="https://platform.minimax.io/docs/coding-plan/codex-cli"
+
 ensure_command() {
   local cmd="$1"
   local install_hint="$2"
@@ -33,3 +35,15 @@ clear_openai_conflicts() {
   unset OPENAI_API_KEY OPENAI_BASE_URL
 }
 
+print_codex_paused_message() {
+  cat >&2 <<EOF
+Codex support in minimax-cli is temporarily unavailable.
+For official MiniMax Codex setup, see:
+${MINIMAX_CODEX_DOCS_URL}
+EOF
+}
+
+exit_codex_paused() {
+  print_codex_paused_message
+  exit 2
+}

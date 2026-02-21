@@ -48,9 +48,24 @@ test -e "${TMP_BIN}/lib/common.sh"
 
 # Ensure installed wrappers can source shared library from install location.
 "${TMP_BIN}/minimax" --help >/dev/null
-MINIMAX_API_KEY=dummy "${TMP_BIN}/codex-mm" --help >/tmp/minimax-codex-smoke.log 2>&1 || true
+if "${TMP_BIN}/codex-mm" --help >/tmp/minimax-codex-smoke.log 2>&1; then
+  echo "Error: codex-mm should fail while codex support is paused." >&2
+  exit 1
+fi
+if ! rg -q "platform.minimax.io/docs/coding-plan/codex-cli" /tmp/minimax-codex-smoke.log; then
+  echo "Error: codex-mm output missing codex docs URL." >&2
+  exit 1
+fi
+if MINIMAX_API_KEY=dummy "${TMP_BIN}/minimax" codex >/tmp/minimax-minimax-codex-smoke.log 2>&1; then
+  echo "Error: minimax codex should fail while codex support is paused." >&2
+  exit 1
+fi
+if ! rg -q "platform.minimax.io/docs/coding-plan/codex-cli" /tmp/minimax-minimax-codex-smoke.log; then
+  echo "Error: minimax codex output missing codex docs URL." >&2
+  exit 1
+fi
 MINIMAX_API_KEY=dummy "${TMP_BIN}/claude-mm" --help >/tmp/minimax-claude-smoke.log 2>&1 || true
-if rg -q "No such file or directory" /tmp/minimax-codex-smoke.log /tmp/minimax-claude-smoke.log; then
+if rg -q "No such file or directory" /tmp/minimax-codex-smoke.log /tmp/minimax-minimax-codex-smoke.log /tmp/minimax-claude-smoke.log; then
   echo "Error: installed wrapper could not resolve shared library." >&2
   exit 1
 fi

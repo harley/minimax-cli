@@ -1,6 +1,8 @@
 # minimax-cli
 
-Run Codex CLI and Claude Code on MiniMax without changing your default `codex` or `claude` setup.
+Run Claude Code on MiniMax without changing your default `claude` setup.
+
+Codex support in this wrapper is currently paused.
 
 ## Install (30 seconds)
 
@@ -12,44 +14,38 @@ minimax
 
 What this gives you:
 
-- `minimax`: choose Codex or Claude with MiniMax config applied for that run only.
-- `codex-mm`: Codex CLI wrapper pinned to MiniMax defaults.
+- `minimax`: Claude-first entrypoint for MiniMax.
 - `claude-mm`: Claude Code wrapper pinned to MiniMax Anthropic-compatible endpoint.
+- `codex-mm`: compatibility command that currently reports Codex as unsupported in this wrapper.
 
 ## Screenshots
 
-Drop your screenshots at these paths:
+Drop your screenshot at this path:
 
 - `assets/screenshots/claude-mm.png`
-- `assets/screenshots/codex-mm.png`
 
-| Claude Code on MiniMax | Codex on MiniMax |
-| --- | --- |
-| ![Claude Code on MiniMax](assets/screenshots/claude-mm.png) | ![Codex on MiniMax](assets/screenshots/codex-mm.png) |
-
-## Terminal Recordings
-
-- `assets/asciinema/claude-mm.cast`
-- `assets/asciinema/codex-mm.cast`
-
-Regenerate recordings:
-
-```bash
-./demo/record-asciinema.sh
-```
+| Claude Code on MiniMax |
+| --- |
+| ![Claude Code on MiniMax](assets/screenshots/claude-mm.png) |
 
 ## Quick Verify
 
 ```bash
 minimax --help
-codex-mm --help
 claude-mm --help
+codex-mm
+```
+
+Expected `codex-mm` output includes:
+
+```text
+Codex support in minimax-cli is temporarily unavailable.
+https://platform.minimax.io/docs/coding-plan/codex-cli
 ```
 
 ## Prerequisites
 
 - Bash (macOS/Linux shell)
-- `codex` CLI installed
 - `claude` CLI installed
 - MiniMax API key
 
@@ -58,43 +54,26 @@ claude-mm --help
 ### `minimax`
 
 ```bash
-minimax [codex|claude] [arguments]
+minimax [claude arguments]
+minimax claude [arguments]
+minimax codex [arguments]
 ```
 
 Examples:
 
 ```bash
 minimax
-minimax codex chat
+minimax -p "Explain this repository"
 minimax claude -p "Explain this repository"
+minimax codex
 ```
 
-### `codex-mm`
+Behavior:
 
-```bash
-codex-mm [codex arguments]
-```
-
-Examples:
-
-```bash
-codex-mm chat
-codex-mm exec "Summarize this repository"
-```
-
-Defaults:
-
-- Provider: `minimax`
-- Model: `codex-MiniMax-M2.5`
-- Base URL: `https://api.minimax.io/v1`
-- Wire API: `responses`
-
-Environment variables:
-
-- `MINIMAX_API_KEY` (required)
-- `MINIMAX_BASE_URL` (optional)
-- `MINIMAX_CODEX_MODEL` (optional)
-- `MINIMAX_CODEX_WIRE_API` (optional, default `responses`)
+- No args: runs `claude-mm`.
+- `minimax claude ...`: runs `claude-mm ...`.
+- `minimax codex ...`: exits non-zero with Codex paused message and docs URL.
+- Any other first arg: forwards full args to `claude-mm`.
 
 ### `claude-mm`
 
@@ -119,6 +98,18 @@ Environment variables:
 - `MINIMAX_API_KEY` (required)
 - `MINIMAX_CLAUDE_BASE_URL` (optional)
 - `MINIMAX_CLAUDE_MODEL` (optional)
+
+### `codex-mm`
+
+`codex-mm` is kept as an installed compatibility command. It currently exits with status code `2` and points users to:
+
+- https://platform.minimax.io/docs/coding-plan/codex-cli
+
+## Codex Status
+
+Codex is currently not supported by this wrapper. Use the official MiniMax Codex guide:
+
+- [MiniMax Codex CLI setup](https://platform.minimax.io/docs/coding-plan/codex-cli)
 
 ## Install Options
 
@@ -155,12 +146,11 @@ rm -f ~/.local/bin/minimax ~/.local/bin/codex-mm ~/.local/bin/claude-mm
 
 - `Error: MINIMAX_API_KEY is not set`
   - Set `MINIMAX_API_KEY` before running wrappers.
-- `codex CLI not found`
-  - Install Codex CLI and ensure it is in `PATH`.
 - `claude CLI not found`
   - Install Claude Code and ensure it is in `PATH`.
-- Unexpected provider behavior in Codex
-  - Wrapper clears `OPENAI_API_KEY` and `OPENAI_BASE_URL` for that run to prevent provider conflicts.
+- `codex-mm` or `minimax codex` reports unsupported
+  - This is expected for now. Follow MiniMax Codex docs:
+    https://platform.minimax.io/docs/coding-plan/codex-cli
 
 ## Official MiniMax Docs
 
