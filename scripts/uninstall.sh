@@ -49,4 +49,17 @@ for tool in minimax codex-mm claude-mm; do
   fi
 done
 
+lib_target="${BIN_DIR}/lib/common.sh"
+if [[ -e "${lib_target}" || -L "${lib_target}" ]]; then
+  rm -f "${lib_target}"
+  echo "Removed ${lib_target}"
+else
+  echo "Skip ${lib_target} (not found)"
+fi
+
+if [[ -d "${BIN_DIR}/lib" ]] && [[ -z "$(ls -A "${BIN_DIR}/lib")" ]]; then
+  rmdir "${BIN_DIR}/lib"
+  echo "Removed ${BIN_DIR}/lib (empty directory)"
+fi
+
 echo "Uninstall complete."

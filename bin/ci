@@ -11,12 +11,16 @@ SCRIPTS=(
   "${REPO_ROOT}/bin/claude-mm"
   "${REPO_ROOT}/bin/ci"
   "${REPO_ROOT}/scripts/install.sh"
+  "${REPO_ROOT}/scripts/bootstrap-install.sh"
   "${REPO_ROOT}/scripts/uninstall.sh"
   "${REPO_ROOT}/install.sh"
   "${REPO_ROOT}/uninstall.sh"
   "${REPO_ROOT}/minimax"
   "${REPO_ROOT}/codex-mm"
   "${REPO_ROOT}/claude-mm"
+  "${REPO_ROOT}/demo/demo-codex.sh"
+  "${REPO_ROOT}/demo/demo-claude.sh"
+  "${REPO_ROOT}/demo/record-asciinema.sh"
 )
 
 echo "==> bash syntax check"
@@ -32,6 +36,7 @@ fi
 echo "==> cli help smoke tests"
 "${REPO_ROOT}/install.sh" --help >/dev/null
 "${REPO_ROOT}/uninstall.sh" --help >/dev/null
+"${REPO_ROOT}/scripts/bootstrap-install.sh" --help >/dev/null
 "${REPO_ROOT}/bin/minimax" --help >/dev/null
 
 echo "==> install/uninstall smoke test"
@@ -42,12 +47,21 @@ trap 'rm -rf "${TMP_BIN}"' EXIT
 test -e "${TMP_BIN}/minimax"
 test -e "${TMP_BIN}/codex-mm"
 test -e "${TMP_BIN}/claude-mm"
+test -e "${TMP_BIN}/lib/common.sh"
+
+# Ensure installed wrappers can source shared library from install location.
+"${TMP_BIN}/minimax" --help >/dev/null
+MINIMAX_API_KEY=dummy "${TMP_BIN}/codex-mm" --help >/tmp/minimax-codex-smoke.log 2>&1 || true
+MINIMAX_API_KEY=dummy "${TMP_BIN}/claude-mm" --help >/tmp/minimax-claude-smoke.log 2>&1 || true
+if rg -q "No such file or directory" /tmp/minimax-codex-smoke.log /tmp/minimax-claude-smoke.log; then
+  echo "Error: installed wrapper could not resolve shared library." >&2
+  exit 1
+fi
 
 "${REPO_ROOT}/uninstall.sh" --bin-dir "${TMP_BIN}" >/dev/null
-if [[ -e "${TMP_BIN}/minimax" || -e "${TMP_BIN}/codex-mm" || -e "${TMP_BIN}/claude-mm" ]]; then
+if [[ -e "${TMP_BIN}/minimax" || -e "${TMP_BIN}/codex-mm" || -e "${TMP_BIN}/claude-mm" || -e "${TMP_BIN}/lib/common.sh" ]]; then
   echo "Error: uninstall smoke test failed." >&2
   exit 1
 fi
 
 echo "All checks passed."
-

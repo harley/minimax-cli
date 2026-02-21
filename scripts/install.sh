@@ -52,6 +52,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 
 mkdir -p "${BIN_DIR}"
+mkdir -p "${BIN_DIR}/lib"
 
 for tool in minimax codex-mm claude-mm; do
   src="${REPO_ROOT}/bin/${tool}"
@@ -77,6 +78,26 @@ for tool in minimax codex-mm claude-mm; do
     echo "Copied ${src} -> ${dst}"
   fi
 done
+
+lib_src="${REPO_ROOT}/bin/lib/common.sh"
+lib_dst="${BIN_DIR}/lib/common.sh"
+if [[ ! -f "${lib_src}" ]]; then
+  echo "Error: missing source file: ${lib_src}" >&2
+  exit 1
+fi
+
+if [[ "${MODE}" == "symlink" ]]; then
+  ln -sfn "${lib_src}" "${lib_dst}"
+  echo "Linked ${lib_dst} -> ${lib_src}"
+else
+  if command -v install >/dev/null 2>&1; then
+    install -m 0755 "${lib_src}" "${lib_dst}"
+  else
+    cp "${lib_src}" "${lib_dst}"
+    chmod 0755 "${lib_dst}"
+  fi
+  echo "Copied ${lib_src} -> ${lib_dst}"
+fi
 
 case ":${PATH}:" in
   *:"${BIN_DIR}":*)

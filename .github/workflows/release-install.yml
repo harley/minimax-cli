@@ -1,0 +1,30 @@
+name: Release Install Script
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  upload-install-script:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build install.sh asset
+        env:
+          TAG_NAME: ${{ github.ref_name }}
+        run: |
+          SAFE_TAG="${TAG_NAME//\\/\\\\}"
+          SAFE_TAG="${SAFE_TAG//&/\\&}"
+          sed "s|__MINIMAX_RELEASE_TAG__|${SAFE_TAG}|g" scripts/bootstrap-install.sh > install.sh
+          chmod +x install.sh
+
+      - name: Upload install.sh to release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: install.sh
+          overwrite_files: true
